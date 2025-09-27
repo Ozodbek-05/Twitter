@@ -55,37 +55,36 @@
 
             <!-- Posts List -->
             <div class="posts-list">
-    {% for post in posts %}
-    <article class="post-item" data-user="{{ post.author.user.username }}" data-post-id="{{ post.id }}">
-        <div class="post-header">
-            <div class="post-avatar">{{ post.author.avatar }}</div>
-            <div class="post-user-info">
-                <h4>{{ post.author.first_name }} {{ post.author.last_name }}</h4>
-                <span class="post-time">{{ post.created_at }}</span>
-            </div>
-        </div>
+            {% for post in posts %}
+            <article class="post-item" data-user="{{ post.author.user.username }}" data-post-id="{{ post.id }}">
+                <div class="post-header">
+                    <div class="post-avatar">{{ post.author.avatar }}</div>
+                    <div class="post-user-info">
+                        <h4>{{ post.author.first_name }} {{ post.author.last_name }}</h4>
+                        <span class="post-time">{{ post.created_at }}</span>
+                    </div>
+                </div>
 
-        <div class="post-content">
-            {{ post.message }}
-        </div>
+                <div class="post-content">
+                    {{ post.message }}
+                </div>
 
-        {% if request.user.is_authenticated and request.user == post.author.user %}
-        <div class="post-actions">
-            <button class="edit-btn" onclick="editPost({{ post.id }})">Edit</button>
+                {% if request.user.is_authenticated and request.user == post.author.user %}
+                <div class="post-actions">
+                    <button class="edit-btn" onclick="editPost({{ post.id }})">Edit</button>
+                </div>
+                <div class="edit-form" id="edit-form-{{ post.id }}" style="display: none;">
+                    <textarea class="edit-textarea">{{ post.message }}</textarea>
+                    <div class="edit-actions">
+                        <button class="save-btn" onclick="savePost({{ post.id }})">Save</button>
+                        <button class="delete-btn" onclick="deletePost({{ post.id }})">Delete</button>
+                        <button class="cancel-btn" onclick="cancelEdit({{ post.id }})">Cancel</button>
+                    </div>
+                </div>
+                {% endif %}
+            </article>
+            {% endfor %}
         </div>
-        <div class="edit-form" id="edit-form-{{ post.id }}" style="display: none;">
-            <textarea class="edit-textarea">{{ post.message }}</textarea>
-            <div class="edit-actions">
-                <button class="save-btn" onclick="savePost({{ post.id }})">Save</button>
-                <button class="delete-btn" onclick="deletePost({{ post.id }})">Delete</button>
-                <button class="cancel-btn" onclick="cancelEdit({{ post.id }})">Cancel</button>
-            </div>
-        </div>
-        {% endif %}
-    </article>
-    {% endfor %}
-</div>
-
         </main>
     </div>
 
