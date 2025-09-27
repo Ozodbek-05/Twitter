@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Network</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    {% include 'layout/base.html' %}
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Users Sidebar -->
+        <aside class="users-sidebar">
+            <h3 class="sidebar-title">Users</h3>
+            <div class="users-list">
+                <a href="#" class="user-item active" data-user="all">
+                    <div class="user-avatar">All</div>
+                    <div class="user-info">
+                        <h4>All Posts</h4>
+                        <span>View all posts</span>
+                    </div>
+                </a>
+               {% for user in users %}
+                    {% if user.username != 'admin' %}
+                        <a href="{% url 'pages:user_posts' user.username %}" class="user-item">
+                            <div class="user-avatar">
+                                {{ user.authormodel.avatar }}
+                            </div>
+                            <div class="user-info">
+                                <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                                <span>@{{ user.username }}</span>
+                            </div>
+                        </a>
+                    {% endif %}
+               {% endfor %}
+
+            </div>
+        </aside>
+
+        <!-- Posts Area -->
+        <main class="posts-area">
+            <div class="posts-header">
+                <span id="posts-title">All Posts</span>
+            </div>
+
+            <!-- Post Form (only for logged in users) -->
+            <div class="post-form" id="post-form" style="display: none;">
+                <textarea class="post-textarea" placeholder="What's happening?"></textarea>
+                <button class="post-submit">Post</button>
+            </div>
+
+            <!-- Posts List -->
+            <div class="posts-list">
+    {% for post in posts %}
+    <article class="post-item" data-user="{{ post.author.user.username }}" data-post-id="{{ post.id }}">
+        <div class="post-header">
+            <div class="post-avatar">{{ post.author.avatar }}</div>
+            <div class="post-user-info">
+                <h4>{{ post.author.first_name }} {{ post.author.last_name }}</h4>
+                <span class="post-time">{{ post.created_at }}</span>
+            </div>
+        </div>
+
+        <div class="post-content">
+            {{ post.message }}
+        </div>
+
+        {% if request.user.is_authenticated and request.user == post.author.user %}
+        <div class="post-actions">
+            <button class="edit-btn" onclick="editPost({{ post.id }})">Edit</button>
+        </div>
+        <div class="edit-form" id="edit-form-{{ post.id }}" style="display: none;">
+            <textarea class="edit-textarea">{{ post.message }}</textarea>
+            <div class="edit-actions">
+                <button class="save-btn" onclick="savePost({{ post.id }})">Save</button>
+                <button class="delete-btn" onclick="deletePost({{ post.id }})">Delete</button>
+                <button class="cancel-btn" onclick="cancelEdit({{ post.id }})">Cancel</button>
+            </div>
+        </div>
+        {% endif %}
+    </article>
+    {% endfor %}
+</div>
+
+        </main>
+    </div>
+
+<script src="{% static 'script.js' %}"></script>
+</body>
+</html>
