@@ -17,7 +17,7 @@
 .username-btn:hover {
     background-color: #28a745;
     color: white;
-    cursor: default; /* hover qilinganda tugma emasligini ko‘rsatish */
+    cursor: default; /* hover qilinganda tugma emasligini ko'rsatish */
 }
 
 .logout-btn {
@@ -28,6 +28,98 @@
 .logout-btn:hover {
     background-color: #1da1f2;
     color: white;
+}
+
+/* Messages Alert Styles */
+.messages-container {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 500px;
+}
+
+.alert-message {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideDown 0.3s ease;
+    font-weight: 500;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.alert-icon {
+    font-size: 20px;
+    margin-right: 12px;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.7;
+    padding: 0;
+    margin-left: 10px;
+    line-height: 1;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .messages-container {
+        top: 70px;
+        width: 95%;
+    }
 }
 </style>
 
@@ -60,14 +152,13 @@
                 Posts
             </a>
             {% if request.user.is_authenticated %}
-                <a href="{% url 'pages:my_posts' %}" class="nav-item {% if selected_user and selected_user == request.user %}active{% endif %}">
+                <a href="{% url 'pages:my-posts' %}" class="nav-item {% if selected_user and selected_user == request.user %}active{% endif %}">
                     My Posts
                 </a>
             {% endif %}
         </nav>
 
 
-        <!-- Agar foydalanuvchi login qilmagan bo‘lsa -->
         {% if not request.user.is_authenticated %}
         <div class="auth-buttons" id="auth-section">
             <a href="{% url 'accounts:register' %}" class="auth-btn">Register</a>
@@ -75,7 +166,7 @@
         </div>
         {% endif %}
 
-        <!-- Agar foydalanuvchi login qilgan bo‘lsa -->
+        <!-- Agar foydalanuvchi login qilgan bo'lsa -->
         {% if request.user.is_authenticated %}
         <div class="user-profile" id="user-section">
             <span class="username-btn">
@@ -86,3 +177,52 @@
         {% endif %}
     </div>
 </header>
+
+<!-- Django Messages Alert -->
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="alert-message alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <div class="alert-content">
+            <span class="alert-icon">
+                {% if message.tags == 'success' %}
+                    ✓
+                {% elif message.tags == 'error' %}
+                    ✕
+                {% elif message.tags == 'warning' %}
+                    ⚠
+                {% elif message.tags == 'info' %}
+                    ℹ
+                {% endif %}
+            </span>
+            <span>{{ message }}</span>
+        </div>
+        <button class="alert-close" onclick="closeMessage({{ forloop.counter }})">&times;</button>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+// Xabarlarni avtomatik yopish (5 soniyadan keyin)
+document.addEventListener('DOMContentLoaded', function() {
+    const messages = document.querySelectorAll('.alert-message');
+    messages.forEach((message, index) => {
+        setTimeout(() => {
+            message.style.animation = 'slideDown 0.3s ease reverse';
+            setTimeout(() => {
+                message.remove();
+            }, 300);
+        }, 5000); // 5 soniya
+    });
+});
+
+// Xabarni qo'lda yopish
+function closeMessage(id) {
+    const message = document.getElementById('message-' + id);
+    message.style.animation = 'slideDown 0.3s ease reverse';
+    setTimeout(() => {
+        message.remove();
+    }, 300);
+}
+</script>
+{% endif %}

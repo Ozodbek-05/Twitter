@@ -63,15 +63,6 @@
                 </div>
                 <p class="auth-subtitle">Join the conversation today</p>
             </div>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                        <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
-                    </div>
-                {% endfor %}
-            {% endif %}
-
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showTab('login')">Login</button>
                 <button class="auth-tab" onclick="showTab('register')">Register</button>
