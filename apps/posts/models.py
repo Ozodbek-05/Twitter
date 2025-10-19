@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class BaseModel(models.Model):
@@ -11,7 +11,11 @@ class BaseModel(models.Model):
 
 
 class AuthorModel(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='author_profile'
+    )
     avatar = models.CharField(max_length=2)
 
     def __str__(self):
@@ -36,4 +40,3 @@ class PostModel(BaseModel):
     class Meta:
         verbose_name = 'post'
         verbose_name_plural = 'posts'
-

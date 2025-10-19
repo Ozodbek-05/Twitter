@@ -19,11 +19,23 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+from apps.accounts.views import LoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls', namespace='accounts')),
-    path('', include('pages.urls', namespace='pages')),
+    path("accounts/",include("apps.accounts.urls",namespace='accounts')),
+    path("posts/",include("apps.posts.urls",namespace='posts')),
+]
+
+
+urlpatterns += [
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:
