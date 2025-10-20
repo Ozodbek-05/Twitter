@@ -7,7 +7,7 @@ from apps.accounts.models import CustomUser
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email',"username",'phone_number','bio','profile_image']
+        fields = ['id','email',"username",'phone_number','bio','profile_image']
         extra_kwargs = ['is_active']
 
     def create(self, validated_data):
